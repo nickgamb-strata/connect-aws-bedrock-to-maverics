@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-.PHONY: init up down logs smoke-test tunnel agentcore-bootstrap agentcore-up agentcore-up-2lo agentcore-down
+.PHONY: init up down logs smoke-test tunnel agentcore-bootstrap agentcore-up agentcore-demo agentcore-down
 
 init:
 	mkdir -p ./certs
@@ -99,8 +99,8 @@ agentcore-bootstrap:
 agentcore-up:
 	bash scripts/agentcore-setup.sh
 
-agentcore-up-2lo:
-	bash scripts/agentcore-setup-2lo.sh
+agentcore-demo:
+	bash scripts/agentcore-demo.sh
 
 agentcore-down:
 	bash scripts/agentcore-teardown.sh

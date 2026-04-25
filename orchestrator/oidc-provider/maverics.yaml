@@ -76,7 +76,7 @@ oidcProvider:
   discovery:
     issuer: https://auth.orchestrator.lab
     endpoints:
-      wellKnown: https://auth.orchestrator.lab/.well-known/oauth-authorization-server
+      wellKnown: https://auth.orchestrator.lab/.well-known/openid-configuration
       jwks: https://auth.orchestrator.lab/oauth2/jwks
       auth: https://auth.orchestrator.lab/oauth2/auth
       token: https://auth.orchestrator.lab/oauth2/token

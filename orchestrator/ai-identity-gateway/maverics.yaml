@@ -47,15 +47,11 @@ mcpProvider:
       enabled: true
       metadataPath: /.well-known/oauth-protected-resource
       servers:
-        - wellKnownEndpoint: https://auth.orchestrator.lab/.well-known/oauth-authorization-server
+        - wellKnownEndpoint: https://auth.orchestrator.lab/.well-known/openid-configuration
           refreshInterval: 24h
           tokenValidation:
             expectedAudiences:
-              - https://gateway.orchestrator.lab/
-              # Public Cloudflare Tunnel hostname so AgentCore-issued tokens
-              # validate when AgentCore reaches the gateway over the tunnel.
-              # Replace with the actual tunnel hostname.
-              - https://gateway.example.com/
+              - https://auth.orchestrator.lab
             method: jwt
             jwt:
               clockSkew: 15s
@@ -64,7 +60,7 @@ connectors:
   - name: oidc-provider
     type: oidc
     tls: oidc-provider
-    oidcWellKnownURL: https://auth.orchestrator.lab/.well-known/oauth-authorization-server
+    oidcWellKnownURL: https://auth.orchestrator.lab/.well-known/openid-configuration
     oauthLoginRedirect:
       urls:
         - https://gateway.orchestrator.lab/oidc-callback

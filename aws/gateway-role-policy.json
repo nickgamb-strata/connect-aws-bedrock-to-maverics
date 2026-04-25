@@ -11,6 +11,21 @@
       "Resource": "*"
     },
     {
+      "Sid": "WorkloadIdentityAndOAuth",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock-agentcore:GetWorkloadAccessToken",
+        "bedrock-agentcore:GetWorkloadAccessTokenForJWT",
+        "bedrock-agentcore:GetWorkloadAccessTokenForUserId",
+        "bedrock-agentcore:GetResourceOauth2Token",
+        "bedrock-agentcore:GetResourceApiKey"
+      ],
+      "Resource": [
+        "arn:aws:bedrock-agentcore:*:*:workload-identity-directory/*",
+        "arn:aws:bedrock-agentcore:*:*:token-vault/*"
+      ]
+    },
+    {
       "Sid": "ReadOAuthSecret",
       "Effect": "Allow",
       "Action": [
