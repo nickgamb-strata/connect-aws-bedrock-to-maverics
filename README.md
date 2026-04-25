@@ -51,7 +51,7 @@ The lab is functionally identical to the prior tutorial. Same containers, same b
 Skip this section if you already have an AWS account.
 
 1. Sign up at [aws.amazon.com](https://aws.amazon.com). New accounts get $200 in starter credits across the first months. A payment method is required even with credits.
-2. After sign-up, open the AWS console and switch to **us-east-1** (top right region selector). Bedrock AgentCore is GA in eight regions; this tutorial uses us-east-1.
+2. After sign-up, open the AWS console and switch to **us-west-2** (top right region selector). Bedrock AgentCore is GA in eight regions; this tutorial uses us-west-2.
 3. In the IAM console, create a non-root user named `maverics-tutorial` with **Programmatic access**.
 4. Attach the policy from `aws/iam-policy.json` to the user (Inline policy, JSON tab, paste the file).
 5. Generate an access key for the user and save the credentials.
@@ -60,12 +60,18 @@ Skip this section if you already have an AWS account.
    aws configure
    # AWS Access Key ID: <your key>
    # AWS Secret Access Key: <your secret>
-   # Default region: us-east-1
+   # Default region: us-west-2
    # Default output: json
    ```
-7. Request Bedrock model access in the console: **Bedrock > Model access > Modify model access**, enable **Anthropic Claude 3.5 Sonnet v2**. Approval is usually instant.
+7. Bedrock model access. AWS retired the Model access page; serverless foundation models are auto-enabled on first invoke. The first time you invoke an Anthropic model the console may ask you to fill in a one-time use case form. Quickly verify access by running:
+   ```bash
+   aws bedrock list-inference-profiles --region us-west-2 --type-equals SYSTEM_DEFINED \
+     --query "inferenceProfileSummaries[?contains(inferenceProfileId, 'sonnet-4-5') || contains(inferenceProfileId, 'haiku-4-5')].inferenceProfileId" \
+     --output text
+   ```
+   You should see entries like `us.anthropic.claude-sonnet-4-5-20250929-v1:0`. The tutorial uses **Claude Sonnet 4.5** (or **Haiku 4.5** for cheaper runs). Modern Anthropic models on Bedrock are accessed via cross-region inference profiles, not direct model IDs.
 
-Cost note. Claude 3.5 Sonnet on Bedrock is roughly $3 per million input tokens and $15 per million output tokens. A short demo session of a hundred tool calls is well under a dollar. AgentCore agents do internal LLM calls for planning, so a single user prompt can spawn five or more model invocations. Run `make agentcore-down` when done so you stop paying for the gateway and target.
+Cost note. Claude Sonnet 4.5 on Bedrock is roughly $3 per million input tokens and $15 per million output tokens; Haiku 4.5 is about a tenth of that. A short demo session of a hundred tool calls is well under a dollar on Sonnet. AgentCore agents do internal LLM calls for planning, so a single user prompt can spawn five or more model invocations. Run `make agentcore-down` when done so you stop paying for the gateway and target.
 
 ## 3. Cloudflare Tunnel
 
@@ -164,7 +170,7 @@ After consent the target moves to **READY**. AgentCore caches the access and ref
 
 ## 7. Invoke an agent
 
-Create an AgentCore agent in the console (Bedrock > AgentCore > Agents > Create) and attach the `maverics-gateway` you just made. Pick **Anthropic Claude 3.5 Sonnet v2** as the model. Test the agent with a prompt like:
+Create an AgentCore agent in the console (Bedrock > AgentCore > Agents > Create) and attach the `maverics-gateway` you just made. Pick **Claude Sonnet 4.5** as the model (or Haiku 4.5 for cheaper runs). Test the agent with a prompt like:
 
 > List the first three accounts in the enterprise ledger.
 
@@ -285,7 +291,7 @@ Bedrock AgentCore (AWS)
 | OAuth callback fails after admin consent | Confirm the AgentCore-generated callback URL is in `redirectURLs` and the OIDC Provider was restarted |
 | Token validation fails at the gateway | Confirm `expectedAudiences` includes the public Cloudflare hostname |
 | AWS access denied creating gateway | Verify the IAM user has the policy from `aws/iam-policy.json` attached |
-| `model access denied` on agent invoke | Check Bedrock > Model access for Claude 3.5 Sonnet v2 in your region |
+| `model access denied` on agent invoke | Verify the inference profile is reachable: `aws bedrock list-inference-profiles --region us-west-2`. First-time Anthropic users may need to submit a use case form via the console |
 
 ## Further reading
 

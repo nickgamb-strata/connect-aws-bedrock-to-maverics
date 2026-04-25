@@ -77,8 +77,8 @@ logs:
 	docker compose logs -f
 
 smoke-test:
-	@echo "==> Checking Keycloak health..."
-	@curl -sk https://keycloak.orchestrator.lab:8443/health/ready | grep -q UP && echo "  Keycloak: OK" || echo "  Keycloak: FAIL"
+	@echo "==> Checking Keycloak realm discovery..."
+	@curl -sk https://keycloak.orchestrator.lab:8443/realms/blueprints/.well-known/openid-configuration | grep -q issuer && echo "  Keycloak: OK" || echo "  Keycloak: FAIL"
 	@echo "==> Checking OIDC Provider discovery..."
 	@curl -sk https://auth.orchestrator.lab/.well-known/oauth-authorization-server | grep -q issuer && echo "  OIDC Provider: OK" || echo "  OIDC Provider: FAIL"
 	@echo "==> Checking Gateway requires auth..."

@@ -156,7 +156,7 @@ services:
       - ./certs/rootCA.pem:/etc/maverics/certs/rootCA.pem
     networks:
       gateway:
-        ipv4_address: 10.80.0.10
+        ipv4_address: 10.81.0.10
 
   ai-identity-gateway:
     build:
@@ -182,7 +182,7 @@ services:
       - ./certs/rootCA.pem:/etc/maverics/certs/rootCA.pem
     networks:
       gateway:
-        ipv4_address: 10.80.0.11
+        ipv4_address: 10.81.0.11
 
   enterprise-ledger:
     init: true
@@ -201,7 +201,7 @@ services:
       - ./apps/enterprise-ledger/seed-data.json:/etc/data/seed-data.json:ro
     networks:
       gateway:
-        ipv4_address: 10.80.0.60
+        ipv4_address: 10.81.0.60
 
   employee-directory:
     init: true
@@ -224,7 +224,7 @@ services:
       - ./apps/employee-directory/seed-data.json:/etc/data/seed-data.json:ro
     networks:
       gateway:
-        ipv4_address: 10.80.0.40
+        ipv4_address: 10.81.0.40
         aliases:
           - employee-directory.orchestrator.lab
 
@@ -233,8 +233,8 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 10.80.0.0/16
-          gateway: 10.80.0.1
+        - subnet: 10.81.0.0/16
+          gateway: 10.81.0.1
 
 volumes:
   oidc-provider-config:
