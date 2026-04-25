@@ -1,0 +1,4 @@
+.DS_Store
+certs/
+.env
+cloudflared/config.yml

@@ -1,0 +1,42 @@
+# Cloudflare Tunnel config template.
+#
+# 1. Create a tunnel:
+#    cloudflared tunnel login
+#    cloudflared tunnel create maverics-lab
+#
+# 2. Copy this file to cloudflared/config.yml and replace:
+#    - <TUNNEL-ID>      with the tunnel id from `cloudflared tunnel list`
+#    - <CREDENTIALS>    with the absolute path to the tunnel credentials json
+#                       (~/.cloudflared/<tunnel-id>.json by default)
+#    - auth.example.com with your actual public hostname for the OIDC Provider
+#    - gateway.example.com with your actual public hostname for the gateway
+#
+# 3. Add DNS records:
+#    cloudflared tunnel route dns maverics-lab auth.example.com
+#    cloudflared tunnel route dns maverics-lab gateway.example.com
+#
+# 4. Run the tunnel from the repo root:
+#    make tunnel
+#
+# The tunnel forwards traffic to the local Envoy edge proxy on port 443. The
+# httpHostHeader rewrites are required because Envoy routes by hostname and
+# expects the lab .orchestrator.lab values internally. noTLSVerify is required
+# because the local certs are self-signed by mkcert.
+
+tunnel: <TUNNEL-ID>
+credentials-file: <CREDENTIALS>
+
+ingress:
+  - hostname: auth.example.com
+    service: https://localhost:443
+    originRequest:
+      httpHostHeader: auth.orchestrator.lab
+      noTLSVerify: true
+
+  - hostname: gateway.example.com
+    service: https://localhost:443
+    originRequest:
+      httpHostHeader: gateway.orchestrator.lab
+      noTLSVerify: true
+
+  - service: http_status:404
